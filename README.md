@@ -1,6 +1,8 @@
 # Dotfiles
 
-My Zsh and WezTerm configuration for macOS (Apple Silicon)
+Personal Zsh and WezTerm configuration for macOS (Apple Silicon).
+
+![WezTerm with lazydocker](assets/lazydocker.png)
 
 Use Oh My Zsh, Powerlevel10k, zsh-autosuggestions, zsh-z, and Homebrew zsh-syntax-highlighting. WezTerm uses Hack Nerd Font.
 
