@@ -1,13 +1,13 @@
 # Dotfiles
 
-My Zsh configuration for macOS (Apple Silicon)
+My Zsh and WezTerm configuration for macOS (Apple Silicon)
 
-Use Oh My Zsh, Powerlevel10k, zsh-autosuggestions, zsh-z, and Homebrew zsh-syntax-highlighting.
+Use Oh My Zsh, Powerlevel10k, zsh-autosuggestions, zsh-z, and Homebrew zsh-syntax-highlighting. WezTerm uses Hack Nerd Font.
 
 ## Setup
 
 ```zsh
-for name in .zshrc .zprofile .zshenv .p10k.zsh; do
+for name in .zshrc .zprofile .zshenv .p10k.zsh .wezterm.lua; do
   if [[ -e "$HOME/$name" || -L "$HOME/$name" ]]; then
     mv "$HOME/$name" "$HOME/$name.backup.$(date +%Y%m%d%H%M%S)"
   fi
