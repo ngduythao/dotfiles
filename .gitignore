@@ -3,3 +3,10 @@
 *.backup
 .zsh_history
 *.backup.*
+
+# Never let Claude secrets or machine-local settings into this public repo.
+claude/**/.env
+claude/**/.env.*
+claude/**/settings.local.json
+claude/**/.mcp.json
+claude/**/.credentials.json

@@ -1,15 +1,13 @@
 # Dotfiles
 
-Personal Zsh, WezTerm, and tmux configuration for macOS (Apple Silicon).
+Personal Zsh, WezTerm, tmux, and Claude Code configuration for macOS
 
 ## Setup
-
-Install GNU Stow and the required tools:
 
 ```zsh
 brew install stow tmux
 cd ~/dotfiles
-stow zsh wezterm tmux
+stow --target="$HOME" zsh wezterm tmux claude
 ```
 
-Existing target files must be backed up or removed before running `stow`.
+Back up conflicting target files before running Stow.
