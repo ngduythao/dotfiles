@@ -102,6 +102,9 @@ export PATH="$JAVA_HOME/bin:$PATH"
 # OTHER TOOLS
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+# psql and pg_dump: libpq is keg-only because it would clash with a full
+# PostgreSQL install.
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 
 # DOCKER CLEAN

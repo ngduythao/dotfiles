@@ -5,8 +5,8 @@ Personal Zsh, WezTerm, tmux, and Claude Code configuration for macOS
 ## Setup
 
 ```zsh
-brew install stow tmux rtk
 cd ~/dotfiles
+brew bundle --file=Brewfile
 stow --target="$HOME" zsh wezterm tmux claude
 ```
 
