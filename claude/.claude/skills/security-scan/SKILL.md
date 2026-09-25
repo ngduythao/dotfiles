@@ -26,7 +26,7 @@ Go through each category in turn:
 - **E**levation of privilege: broken access control and gaps in role checks
 
 ### 3. OWASP Top 10
-The checklist follows the 2021 edition of the OWASP Top 10 (A01 to A10); name the
+The checklist follows the 2025 edition of the OWASP Top 10 (A01 to A10); name the
 edition when you report. Per-category checks are in
 `references/stride-owasp-checklist.md`.
 

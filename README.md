@@ -1,13 +1,10 @@
 # Dotfiles
 
-Personal Zsh, WezTerm, tmux, and Claude Code configuration for macOS
+Zsh, WezTerm, tmux and Claude Code config for macOS (Apple Silicon).
 
-## Setup
-
-```zsh
-cd ~/dotfiles
-brew bundle --file=Brewfile
-stow --target="$HOME" zsh wezterm tmux claude
-```
-
-Back up conflicting target files before running Stow.
+| Path | Linked to |
+| --- | --- |
+| `zsh/` | `~/.zshrc`, `~/.zshenv`, `~/.zprofile`, `~/.p10k.zsh` |
+| `wezterm/`, `tmux/` | `~/.wezterm.lua`, `~/.tmux.conf` |
+| `claude/.claude/` | `~/.claude/` ([details](claude/README.md)) |
+| `Brewfile`, `bootstrap.sh` | not linked |

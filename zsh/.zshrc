@@ -35,43 +35,17 @@ fi
 
 
 # NVM - LAZY LOAD
-# No load NVM when open terminal.
-# Only loading when using node/npm/npx/nvm/corepack.
-
-export NVM_DIR="$HOME/.nvm"
+# Node, npm, npx, corepack and pnpm are on PATH from .zshenv; only `nvm` itself loads nvm, when
+# it is first used (for example to switch versions).
 _load_nvm() {
-  unset -f nvm node npm npx corepack
-
-  [[ -s "$NVM_DIR/nvm.sh" ]] &&
-    source "$NVM_DIR/nvm.sh"
-
-  [[ -s "$NVM_DIR/bash_completion" ]] &&
-    source "$NVM_DIR/bash_completion"
+  unset -f nvm
+  [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 }
 
 nvm() {
   _load_nvm
   nvm "$@"
-}
-
-node() {
-  _load_nvm
-  node "$@"
-}
-
-npm() {
-  _load_nvm
-  npm "$@"
-}
-
-npx() {
-  _load_nvm
-  npx "$@"
-}
-
-corepack() {
-  _load_nvm
-  corepack "$@"
 }
 
 

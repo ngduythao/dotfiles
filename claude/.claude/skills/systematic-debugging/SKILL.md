@@ -10,17 +10,7 @@ stages. Size each stage to the problem: a failure that reproduces every time on
 your machine can move through the stages in one short pass, while a wide
 incident needs a written trail of evidence.
 
-## The One Rule
-
-```
-UNDERSTAND THE ROOT CAUSE BEFORE CHANGING ANYTHING
-```
-
-Finish stage 1 before proposing any fix.
-
 ## The Four Stages
-
-Go as deep in each stage as the risk and the uncertainty require.
 
 ### Stage 1: Find the Cause
 
@@ -82,36 +72,7 @@ Go as deep in each stage as the risk and the uncertainty require.
      another shared-state or coupling problem, the design itself may be wrong.
      Talk it through with the user before trying anything else.
 
-## Warning Signs: Stop and Go Back
-
-If you notice yourself thinking any of these:
-- "Patch it now, figure it out later"
-- "Let me just change X and see"
-- "Make several changes, then run the tests"
-- "No need to run it, I can tell"
-- "It's probably X, I'll fix that"
-- "I don't really get it, but this might work"
-- "Just one more try" (after two or more already)
-
-**Every one of them means:** stop and return to stage 1.
-
-## When the User Signals You're Off Track
-
-- "Isn't that happening?": you assumed without checking
-- "Will that show us...?": you should have gathered evidence
-- "Stop guessing": you are proposing fixes without understanding
-- "Go back to basics": revisit the diagnosis or the design, not just the symptom
-- "Are we stuck?" (said with frustration): the current approach isn't working
-
-**When you hear this:** stop and return to stage 1.
-
-## Tempting Excuses
-
-| Excuse | Why it's wrong |
-|--------|----------------|
-| "It's simple, no process needed" | Simple bugs have root causes too |
-| "It's urgent, there's no time" | Investigating properly is faster than guessing |
-| "Let me try this first, then investigate" | The first fix sets the habit; investigate from the start |
+If the user questions the diagnosis, return to stage 1.
 
 ## Done Means
 

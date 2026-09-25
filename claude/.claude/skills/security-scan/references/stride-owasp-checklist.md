@@ -65,20 +65,20 @@ Top 10).
 
 ---
 
-## OWASP Top 10 (2021) at a Glance
+## OWASP Top 10 (2025) at a Glance
 
 | # | Category | Look for |
 |---|----------|----------|
-| A01 | Broken Access Control | Missing authorization checks, IDOR, loose CORS, path traversal |
-| A02 | Cryptographic Failures | MD5/SHA-1 hashing, data stored in plaintext, no TLS, weak ciphers |
-| A03 | Injection | SQL, NoSQL, OS command, LDAP, or template injection from unchecked input |
-| A04 | Insecure Design | No threat model, flaws in business logic, abuse cases never tested |
-| A05 | Security Misconfiguration | Default credentials, detailed error pages, features or ports left on |
-| A06 | Vulnerable Components | Old dependencies, known CVEs, libraries without patches |
+| A01 | Broken Access Control | Missing authorization checks, IDOR, loose CORS, path traversal, SSRF (user URLs fetched without checks) |
+| A02 | Security Misconfiguration | Default credentials, detailed error pages, features or ports left on, permissive cloud settings |
+| A03 | Software Supply Chain Failures | Old or unpinned dependencies, known CVEs, untrusted packages, a compromised CI/CD pipeline |
+| A04 | Cryptographic Failures | MD5/SHA-1 hashing, data stored in plaintext, no TLS, weak ciphers |
+| A05 | Injection | SQL, NoSQL, OS command, LDAP, or template injection from unchecked input |
+| A06 | Insecure Design | No threat model, flaws in business logic, abuse cases never tested |
 | A07 | Authentication Failures | Brute force, credential stuffing, session fixation, weak tokens |
-| A08 | Data Integrity Failures | Unsigned updates, unchecked deserialisation, a compromised CI/CD pipeline |
-| A09 | Logging Failures | Security events not logged, no alerts, too little monitoring |
-| A10 | SSRF | URLs from users fetched without checks, reaching internal services |
+| A08 | Software or Data Integrity Failures | Unsigned updates or artifacts, unchecked deserialisation |
+| A09 | Security Logging and Alerting Failures | Security events not logged, no alerts, too little monitoring |
+| A10 | Mishandling of Exceptional Conditions | Errors that fail open, swallowed exceptions, stack traces or secrets in error output |
 
 ---
 
