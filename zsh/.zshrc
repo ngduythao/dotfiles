@@ -94,10 +94,13 @@ docker-clean() {
   docker rmi $(docker images -q) -f 2>/dev/null
 
   echo "Delete volumes..."
-  docker volume prune -f 2>/dev/null
+  docker volume prune -a -f 2>/dev/null
 
   echo "Delete networks..."
   docker network prune -f 2>/dev/null
+
+  echo "Delete build history..."
+  docker buildx history rm --all 2>/dev/null
 
   echo "Clean up Docker..."
   docker system prune -a -f --volumes 2>/dev/null
