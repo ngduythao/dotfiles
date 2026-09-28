@@ -93,7 +93,8 @@ it a severity. Never print the value itself.
 | Private key in PEM form | `-----BEGIN (RSA \|EC \|DSA \|OPENSSH )?PRIVATE KEY-----` |
 | AWS key ID | `AKIA[0-9A-Z]{16}` |
 | AWS secret key assigned in code | `(?i)aws[_-]?secret[_-]?access[_-]?key\s*[:=]\s*['"][A-Za-z0-9/+]{40}['"]` |
-| GitHub personal token | `ghp_[A-Za-z0-9]{36}` |
+| GitHub classic, OAuth, app, or refresh token | `gh[pousr]_[A-Za-z0-9]{36}` |
+| GitHub fine-grained personal token | `github_pat_[A-Za-z0-9_]{82}` |
 | Stripe live or test secret | `sk_(live\|test)_[A-Za-z0-9]{24,}` |
 | JWT | `eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+` |
 | Bearer token written out | `(?i)bearer\s+[A-Za-z0-9\-._~+/]{20,}` |
