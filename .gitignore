@@ -10,3 +10,6 @@ claude/**/.env.*
 claude/**/settings.local.json
 claude/**/.mcp.json
 claude/**/.credentials.json
+
+# Personal notes, not published.
+claude/README-workflow.md
