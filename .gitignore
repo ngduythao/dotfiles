@@ -11,5 +11,7 @@ claude/**/settings.local.json
 claude/**/.mcp.json
 claude/**/.credentials.json
 
-# Personal notes, not published.
+# Personal notes and skills, not published.
 claude/README-workflow.md
+claude/.claude/skills/feature/
+claude/.claude/skills/fintech-review/

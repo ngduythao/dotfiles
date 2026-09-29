@@ -31,9 +31,7 @@ Output the PR description as a fenced code block (so it's easy to copy). Use thi
 ```
 ## Summary
 
-- <bullet 1: what changed, focused on intent — "added X to solve Y" not "modified file Z">
-- <bullet 2>
-- <bullet 3>
+- <one bullet per logical change, focused on intent — "added X to solve Y" not "modified file Z">
 
 ## Why
 

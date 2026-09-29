@@ -17,11 +17,12 @@ claude/
     ├── agents/
     │   └── security-reviewer.md
     └── skills/
-        ├── code-review/             ← /code-review (financial + Solidity checklist)
         ├── pr-description/          ← /pr-description
         ├── security-scan/
         └── systematic-debugging/
 ```
+
+Personal skills live in the same `skills/` folder but are gitignored, so they are not published and a fresh machine does not get them.
 
 Plugins (Trail of Bits `building-secure-contracts`, `property-based-testing`) are declared in
 `settings.json` and installed by `bootstrap.sh`. Secrets never go here: `settings.local.json`,
@@ -73,19 +74,6 @@ Reads `git log` + `git diff` against `main` (or master/develop, whichever exists
 
 Why I codified this: same shape every PR, removes manual templating, and the model can't drift into "improved code quality" filler because the skill rules it out explicitly.
 
-### `/code-review`
-
-Applies a financial-grade checklist (money handling, transaction boundaries, idempotency, concurrency, audit trail, security, observability, Solidity and on-chain integration) to either the current branch diff or a path passed as `$ARGUMENTS`. Each finding gets:
-
-- Severity tag (HIGH / MEDIUM / LOW)
-- `file:line` evidence
-- What can go wrong in production
-- Concrete fix
-
-Ends with strong points, an overall grade and quick wins.
-
-Why I codified this: I tend to forget the same dimensions when reviewing manually. Encoding the checklist removes that bias.
-
 ## 3. Subagents — context hygiene
 
 `agents/security-reviewer.md` is the one custom subagent. Claude Code also ships built-in subagents (`Explore`, `Plan`, `general-purpose`). The pattern: when exploring large code or running parallel investigations, the main agent dispatches subagents with restricted scope; each returns a short summary instead of pulling raw file content into the main context window.
@@ -102,7 +90,7 @@ See [`README-mcp.md`](./README-mcp.md). Not in `settings.json` because they need
 |----------------------|--------------|
 | "What hooks do you use?" | `cat ~/.claude/settings.json` → walk through `hooks/` |
 | "How do you stop the agent from breaking things?" | Run the demo command above; show exit 2 + message |
-| "Workflows you've codified?" | `cat ~/.claude/skills/code-review/SKILL.md` |
+| "Workflows you've codified?" | `cat ~/.claude/skills/pr-description/SKILL.md` |
 | "External systems integration?" | Walk through `README-mcp.md` |
 | "When does the agent fail?" | Hallucination → compiler catches. Confidently wrong → demand `file:line` evidence. Scope creep → strict prompt + diff size budget. Destructive → hook blocks. |
 
