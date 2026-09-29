@@ -78,7 +78,7 @@ Why I codified this: same shape every PR, removes manual templating, and the mod
 
 `agents/security-reviewer.md` is the one custom subagent. Claude Code also ships built-in subagents (`Explore`, `Plan`, `general-purpose`). The pattern: when exploring large code or running parallel investigations, the main agent dispatches subagents with restricted scope; each returns a short summary instead of pulling raw file content into the main context window.
 
-This is an *interaction pattern*, not a file in `.claude/`. Worth knowing the pattern exists, especially when prompts get long.
+A custom subagent is a markdown file in `agents/`; the built-in ones need no file at all. Either way, delegating is an *interaction pattern* worth knowing, especially when prompts get long.
 
 ## 4. MCP servers
 

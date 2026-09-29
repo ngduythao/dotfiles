@@ -93,6 +93,10 @@ step "Slither"
 export PATH="$HOME/.local/bin:$PATH"
 has slither || pipx install slither-analyzer
 
+step "MarkItDown"
+# Lets Claude read .docx, .pptx and .xlsx as Markdown (see claude/.claude/CLAUDE.md).
+has markitdown || uv tool install 'markitdown[docx,pptx,xlsx]'
+
 step "Claude Code"
 has claude || curl -fsSL https://claude.ai/install.sh | bash
 # Marketplaces and plugins come from claude/.claude/settings.json, so installing a plugin on
