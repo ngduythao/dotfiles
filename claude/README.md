@@ -1,108 +1,99 @@
 # Claude Code setup
 
-What's wired up in `~/.claude/` (stowed from `claude/.claude/`), why each piece exists, and how to demo it during a walkthrough. Everything here is user-level, so it applies in every project on every machine that ran `bootstrap.sh`.
+User-level Claude Code config: `claude/.claude/` is stowed into `~/.claude/`, so it applies in every project on every machine that ran `bootstrap.sh`.
+This page says what each piece does, why it exists, and how to show it in a walkthrough.
 
-## Layout
+## What's here
 
-```
-claude/
-├── README.md                        ← you are here (stow skips README*)
-├── README-mcp.md                    ← guide for adding MCP servers (per project)
-└── .claude/                         ← linked into ~/.claude/
-    ├── CLAUDE.md, RTK.md            ← global instructions
-    ├── settings.json                ← hooks, permissions, plugins (committed, public)
-    ├── statusline.sh
-    ├── hooks/
-    │   └── block-destructive-git.sh ← PreToolUse: refuse destructive git ops
-    ├── agents/
-    │   └── security-reviewer.md
-    └── skills/
-        ├── pr-description/          ← /pr-description
-        ├── security-scan/
-        └── systematic-debugging/
-```
+| Piece | Path in `claude/.claude/` | Purpose |
+| --- | --- | --- |
+| Global instructions | `CLAUDE.md`, `RTK.md` | Loaded in every session |
+| Settings | `settings.json` | Hooks, permissions, plugins, status line (committed, public) |
+| Hooks | `hooks/` | Guardrails the harness enforces |
+| Skills | `skills/` | Workflows invoked as `/<name>` |
+| Subagents | `agents/` | Scoped workers that return a summary |
+| Status line | `statusline.sh` | Model, effort, context, 5h/7d limits, folder |
 
-Personal skills live in the same `skills/` folder but are gitignored, so they are not published and a fresh machine does not get them.
+Also in `claude/`, not stowed (stow skips `README*`): [`README-mcp.md`](./README-mcp.md) for MCP servers.
 
-Plugins (Trail of Bits `building-secure-contracts`, `property-based-testing`) are declared in
-`settings.json` and installed by `bootstrap.sh`. Secrets never go here: `settings.local.json`,
-`.mcp.json`, `.credentials.json` and `.env*` are gitignored.
+Secrets never live here: `settings.local.json`, `.mcp.json`, `.credentials.json` and `.env*` are gitignored.
 
-## 1. Hooks — deterministic guardrails
+## Hooks: guardrails outside the model
 
-Hooks are shell commands the **harness** (Claude Code itself) runs on events. They execute outside the model — exit code 2 from a `PreToolUse` hook aborts the tool call before it runs. Why this matters: I don't trust prompt-level instructions for safety-critical rules; the harness layer is deterministic.
+Hooks are shell commands Claude Code runs on events, outside the model; exit 2 from a `PreToolUse` hook cancels the tool call.
+I don't trust prompt-level instructions for safety-critical rules, so those rules live here.
 
-`rtk hook claude` (`PreToolUse` × `Bash`) rewrites commands through `rtk` to shorten their output; see `RTK.md`.
+Both hooks run on `PreToolUse` × `Bash`:
 
-### `block-destructive-git.sh` — `PreToolUse` × `Bash`
+- `rtk hook claude` rewrites commands through `rtk` to shorten their output (see `RTK.md`).
+- `hooks/block-destructive-git.sh` refuses destructive git commands, and Claude is told to ask me to run them:
 
-Inspects every bash command Claude is about to run. Pattern-matches against destructive git operations:
-
-| Pattern | Reason blocked |
-|---------|----------------|
-| `push --force` / `push -f` | Force push rewrites shared history |
-| `push --force-with-lease` | Even with lease — manual confirm |
-| `reset --hard` | Discards uncommitted changes |
-| `branch -D` | Force-delete branch |
-| `clean -fd` | Deletes untracked files |
-| `checkout -- .` / `restore .` | Discards working tree |
+| Blocked | Why |
+| --- | --- |
+| `push --force`, `push -f`, `push --force-with-lease` | Rewrites shared history |
+| `reset --hard`, `checkout -- .`, `restore .` | Discards uncommitted work |
+| `clean` with `-f` | Deletes untracked files |
+| `branch -D` | Force-deletes a branch |
 | `commit --amend` | Rewrites the previous commit |
-| `--no-verify` | Skips pre-commit hooks |
-| `--no-gpg-sign` | Skips commit signing |
+| `--no-verify`, `--no-gpg-sign` | Skips pre-commit hooks or signing |
 | `reflog expire` | Makes recovery impossible |
 
-On match: exit 2, stderr explains why. Claude sees the message and stops.
-
-**Demo it:**
-
 ```bash
-echo '{"tool_input":{"command":"git push --force"}}' \
-  | bash ~/.claude/hooks/block-destructive-git.sh ; echo "exit=$?"
-# stderr: Blocked: destructive git operation detected...
+echo '{"tool_input":{"command":"git push --force"}}' | bash ~/.claude/hooks/block-destructive-git.sh; echo "exit=$?"
+# Blocked: destructive git operation detected (force push). Ask the user to run it manually.
 # exit=2
 ```
 
-**Caveat**: the hook matches the literal bash command string. Running a test command that *mentions* one of these patterns in an echo will also be blocked — false positive, but the conservative behavior is correct for safety.
+It matches the command text, so a command that only mentions a pattern (an `echo "git reset --hard"`) is blocked too; that false positive is accepted.
 
-## 2. Skills — codified workflow
+## Skills: codified workflows
 
-Slash commands defined in `~/.claude/skills/<name>/SKILL.md`. Invoke with `/<name>` in a Claude Code session. Internally: markdown file with optional frontmatter; body is the instruction Claude follows. `$ARGUMENTS` captures whatever the user typed after the command.
+| Skill | Does |
+| --- | --- |
+| `/pr-description` | Drafts a PR description (Summary, Why, Notes for reviewer, Test plan) from the branch diff against main |
+| `/security-scan` | Looks for reachable security risks in a chosen part of the code |
+| `/systematic-debugging` | Proves a bug's root cause with evidence before any fix |
 
-### `/pr-description`
+Each is `skills/<name>/SKILL.md`: frontmatter with a `description`, and a body Claude follows.
+Why codify them: the same shape every time, and the rules keep the model out of filler such as "improved code quality".
+Personal skills sit in the same folder but are gitignored, so they are neither published nor installed on a new machine.
 
-Reads `git log` + `git diff` against `main` (or master/develop, whichever exists). Drafts a structured PR description with **Summary / Why / Notes for reviewer / Test plan** sections, output as a fenced code block ready to paste into GitHub.
+## Subagents: context hygiene
 
-Why I codified this: same shape every PR, removes manual templating, and the model can't drift into "improved code quality" filler because the skill rules it out explicitly.
+`agents/security-reviewer.md` runs a scoped security review and returns evidence-backed findings without editing code.
+Claude Code also ships `Explore`, `Plan` and `general-purpose`.
+Delegating large searches or parallel investigations keeps raw file content out of the main context; only the summary comes back.
 
-## 3. Subagents — context hygiene
+## Plugins
 
-`agents/security-reviewer.md` is the one custom subagent. Claude Code also ships built-in subagents (`Explore`, `Plan`, `general-purpose`). The pattern: when exploring large code or running parallel investigations, the main agent dispatches subagents with restricted scope; each returns a short summary instead of pulling raw file content into the main context window.
+Declared in `settings.json` and installed on a new machine by `bootstrap.sh`:
 
-A custom subagent is a markdown file in `agents/`; the built-in ones need no file at all. Either way, delegating is an *interaction pattern* worth knowing, especially when prompts get long.
+- Trail of Bits: `building-secure-contracts`, `property-based-testing`
+- Anthropic: `claude-code-setup`, which recommends hooks, skills and MCP servers for a repo
 
-## 4. MCP servers
+## MCP servers
 
-See [`README-mcp.md`](./README-mcp.md). Not in `settings.json` because they need credentials: add them per project with `claude mcp add` (Postgres, GitHub).
-
-## Demo cheatsheet
-
-| Interviewer question | What to show |
-|----------------------|--------------|
-| "What hooks do you use?" | `cat ~/.claude/settings.json` → walk through `hooks/` |
-| "How do you stop the agent from breaking things?" | Run the demo command above; show exit 2 + message |
-| "Workflows you've codified?" | `cat ~/.claude/skills/pr-description/SKILL.md` |
-| "External systems integration?" | Walk through `README-mcp.md` |
-| "When does the agent fail?" | Hallucination → compiler catches. Confidently wrong → demand `file:line` evidence. Scope creep → strict prompt + diff size budget. Destructive → hook blocks. |
+Added per project with `claude mcp add`, not in `settings.json`, because they need credentials; see [`README-mcp.md`](./README-mcp.md) (Postgres, GitHub).
 
 ## Adding more
 
-- **New hook**: drop the script in `claude/.claude/hooks/`, wire it in `settings.json` under the relevant event (`PreToolUse`, `PostToolUse`, `Stop`, etc.).
-- **New skill**: create `claude/.claude/skills/<name>/SKILL.md` with `description:` in frontmatter, then `stow --restow claude` so the new folder is linked. Test by typing `/<name>`.
-- **New MCP server**: see `README-mcp.md`.
-- **New plugin**: install it once with `/plugin`; Claude Code writes it to `settings.json`, and `bootstrap.sh` installs it on the next machine.
+- **Hook**: put the script in `hooks/` and wire it in `settings.json` under its event (`PreToolUse`, `PostToolUse`, `Stop`, ...). `hooks/` is linked as a whole directory, so no restow.
+- **Skill or subagent**: create `skills/<name>/SKILL.md` or `agents/<name>.md`, then `stow --restow claude` so the new entry is linked. Test with `/<name>`.
+- **Plugin**: `claude plugin install <plugin>@<marketplace>` (or `/plugin`); it is written to `settings.json`, so the next `bootstrap.sh` installs it.
+- **MCP server**: see `README-mcp.md`.
 
-## What this is NOT
+## Walkthrough cheatsheet
 
-- Auto-deploy. Nothing in `~/.claude/` runs without a human invoking Claude Code.
-- A replacement for code review. Hooks block obvious foot-guns; diffs still get reviewed by a person.
-- Permanent. Hook event names, skill directory layout, and MCP config format will shift as Claude Code evolves. Re-check the official docs before quoting any of this verbatim.
+| Question | Show |
+| --- | --- |
+| "What hooks do you use?" | `cat ~/.claude/settings.json`, then `hooks/` |
+| "How do you stop the agent from breaking things?" | The demo command above: exit 2 and the message |
+| "Workflows you've codified?" | `cat ~/.claude/skills/pr-description/SKILL.md` |
+| "External systems?" | `README-mcp.md` |
+| "When does the agent fail?" | Hallucination: the compiler catches it. Confidently wrong: demand `file:line` evidence. Scope creep: the plan is approved before any code, and the agent stays inside it. Destructive: the hook blocks it. |
+
+## Limits
+
+- Nothing here runs unless I start Claude Code; there is no auto-deploy.
+- Hooks stop obvious foot-guns; a person still reviews every diff.
+- Hook events, skill layout and MCP config change as Claude Code evolves; check the official docs before quoting this.
