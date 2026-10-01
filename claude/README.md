@@ -52,9 +52,9 @@ It matches the command text, so a command that only mentions a pattern (an `echo
 | --- | --- |
 | `/pr-description` | Drafts a PR description (Summary, Why, Notes for reviewer, Test plan) from the branch diff against main |
 | `/security-scan` | Looks for reachable security risks in a chosen part of the code |
-| `/systematic-debugging` | Proves a bug's root cause with evidence before any fix |
 
 Each is `skills/<name>/SKILL.md`: frontmatter with a `description`, and a body Claude follows.
+A skill earns its place when it holds what the model cannot know: my decisions, a repo's facts, a script, a fixed output format. Generic "how to do X well" guidance is left to the model.
 Why codify them: the same shape every time, and the rules keep the model out of filler such as "improved code quality".
 Personal skills sit in the same folder but are gitignored, so they are neither published nor installed on a new machine.
 
@@ -68,7 +68,7 @@ Delegating large searches or parallel investigations keeps raw file content out 
 
 Declared in `settings.json` and installed on a new machine by `bootstrap.sh`:
 
-- Trail of Bits: `building-secure-contracts`, `property-based-testing`
+- Trail of Bits: `property-based-testing`
 - Anthropic: `claude-code-setup`, which recommends hooks, skills and MCP servers for a repo
 
 ## MCP servers

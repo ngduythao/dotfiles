@@ -32,7 +32,6 @@
   },
   "enabledPlugins": {
     "property-based-testing@trailofbits": true,
-    "building-secure-contracts@trailofbits": true,
     "claude-code-setup@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {

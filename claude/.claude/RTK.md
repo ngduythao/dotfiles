@@ -10,9 +10,9 @@ result.
 
 Never judge a check by rtk's summary line. Filtered linter output can read
 "No issues found" or "Checked N files" while the command failed. For lint,
-format, typecheck, test and build commands (biome, eslint, tsc, vitest, forge,
-slither, go vet, …), run them with `rtk proxy` and decide pass or fail from the
-exit code, for example `rtk proxy pnpm lint; echo "exit=$?"`.
+format, typecheck, test and build commands (biome, eslint, tsc, vitest, go vet,
+…), run them with `rtk proxy` and decide pass or fail from the exit code, for
+example `rtk proxy pnpm lint; echo "exit=$?"`.
 
 Read `$?` right after the command, before anything else runs. In
 `echo "$(basename "$PWD") exit=$?"` the command substitution runs first and

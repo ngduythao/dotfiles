@@ -79,22 +79,9 @@ for pkg in "${PACKAGES[@]}"; do
 done
 stow --dir="$DOTFILES" --target="$HOME" --restow "${PACKAGES[@]}"
 
-step "Foundry"
-if [[ ! -x "$HOME/.foundry/bin/foundryup" ]]; then
-  # foundryup itself, without the installer that appends PATH to zsh/.zshenv (already there).
-  mkdir -p "$HOME/.foundry/bin"
-  curl -fsSL https://raw.githubusercontent.com/foundry-rs/foundry/master/foundryup/foundryup \
-    -o "$HOME/.foundry/bin/foundryup"
-  chmod +x "$HOME/.foundry/bin/foundryup"
-fi
-has forge || "$HOME/.foundry/bin/foundryup"
-
-step "Slither"
-export PATH="$HOME/.local/bin:$PATH"
-has slither || pipx install slither-analyzer
-
 step "MarkItDown"
 # Lets Claude read .docx, .pptx and .xlsx as Markdown (see claude/.claude/CLAUDE.md).
+export PATH="$HOME/.local/bin:$PATH"
 has markitdown || uv tool install 'markitdown[docx,pptx,xlsx]'
 
 step "Claude Code"
