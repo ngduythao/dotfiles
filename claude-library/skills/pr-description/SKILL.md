@@ -40,9 +40,23 @@ If a ticket/issue is referenced in commits, link it. Skip this section if it dup
 
 ## Notes for reviewer
 
-<Things the reviewer should look at specifically: subtle invariants, migration
-risk, breaking changes, files that look big but are mechanical. Skip if nothing
-non-obvious.>
+<Things the reviewer should look at specifically: subtle invariants, files that
+look big but are mechanical. Skip if nothing non-obvious.>
+
+## Risk
+
+**Reversible:** <"yes, revert the commit", or "no" plus what cannot be undone: a migration
+already applied, data rewritten, an event already published, a contract deployed>
+**Blast radius:** <what breaks if this is wrong: one endpoint, every payment, another
+service that consumes the event>
+
+<Rollback steps, when reverting the commit is not enough.>
+
+## Evidence
+
+<Before and after for a behaviour change: the failing then passing test, or the old and
+new output. Only what was really run; leave the section out rather than describe a run
+that did not happen.>
 
 ## Test plan
 
@@ -56,4 +70,6 @@ non-obvious.>
 - Don't list every file changed — that's the diff's job.
 - Name every change concretely: what changed and what it is for.
 - If the branch contains unrelated commits, surface that as a reviewer note rather than hiding it.
+- Always fill in Risk. A schema migration, a changed event or API contract, a backfill, or anything deployed outside the repo makes the change not reversible by a plain revert: say so.
+- Evidence comes from CI output or commands run in this conversation; a commit message that says tests pass is not evidence. Mask secrets in any output you quote.
 - If you can't determine intent from commits + diff, ask the user instead of guessing.

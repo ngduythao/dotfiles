@@ -6,7 +6,8 @@
       "Read(**/.env.*.local)",
       "Read(**/*.pem)",
       "Read(**/*.key)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "opus",
   "hooks": {
@@ -31,7 +32,7 @@
     "command": "~/.claude/statusline.sh"
   },
   "enabledPlugins": {
-    "property-based-testing@trailofbits": true,
+    "property-based-testing@trailofbits": false,
     "claude-code-setup@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
@@ -56,6 +57,5 @@
   },
   "tui": "fullscreen",
   "theme": "dark-daltonized",
-  "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "agentPushNotifEnabled": true
 }

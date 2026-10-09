@@ -1,6 +1,7 @@
 ---
 name: security-scan
 description: "Examine a chosen part of the code for reachable security risks: authentication, authorization, injection, exposed secrets, vulnerable dependencies, and similar."
+argument-hint: "[glob of the files to audit, or full; default: changes since the base branch]"
 ---
 
 # Security Audit
@@ -13,8 +14,12 @@ If a check could not be run, say so instead of implying it passed.
 ## Method
 
 ### 1. Settle the Scope
-Turn the given glob, or the word `full`, into a list of files. Examine that scope
-and the trust boundaries around it, and say which parts were not reviewed.
+Turn the given glob, or the word `full`, into a list of files. With no argument,
+the scope is every file that differs from the base branch (`main`, `master` or
+`develop`, the first that exists): commits on the current branch, uncommitted edits,
+and new untracked files, which `git diff` alone does not list. If nothing differs,
+ask for a scope rather than scanning the whole repo. Examine that scope and the trust
+boundaries around it, and say which parts were not reviewed.
 
 ### 2. Threats by Type (STRIDE)
 Go through each category in turn:
